@@ -1,7 +1,8 @@
 package statisticker;
 
-import static org.junit.Assert.*;
-import jdk.nashorn.internal.AssertsEnabled;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,45 +12,45 @@ import org.junit.Test;
 
 public class StatisticsTest 
 {
-    @Test
-    public void reportsAverageMinMaxx()
-    {
-        Float[] numbers = {1.5f, 8.9f, 3.2f, 4.5f};
-        List<___> numberList = Arrays.asList(numbers);
+   
+  @Test
+  public void reportsAverageMinMaxx() {
+    Float[] numbers = { 1.5f, 8.9f, 3.2f, 4.5f };
+    List<Float> numberList = Arrays.asList(numbers);
 
-        Statistics.Stats s = Statistics.getStatistics(numberList);
+    Statistics.Stats s = Statistics.getStatistics(numberList);
 
-        float epsilon = 0.001f;
-        assertEquals(s.average, 4.525f, epsilon);
-        assertEquals(s.min, 1.5f, epsilon);
-        assertEquals(s.max, 8.9f, epsilon);
-    }
-    @Test
-    public void reportsNaNForEmptyInput()
-    {
-        List<___> emptyList = new ArrayList<___>();
+    float epsilon = 0.001f;
+    assertEquals(s.average, 4.525f, epsilon);
+    assertEquals(s.min, 1.5f, epsilon);
+    assertEquals(s.max, 8.9f, epsilon);
+  }
 
-        Statistics.Stats s = Statistics.getStatistics(emptyList);
+  @Test
+  public void reportsAverageMinMaxxForNaNValues() {
+    Float[] numbers = { Float.NaN, 1.5f, 3.2f, Float.NaN };
+    List<Float> numberList = Arrays.asList(numbers);
 
-        //All fields of computedStats (average, max, min) must be
-        //Float.NaN (not-a-number), as described in
-        //https://www.geeksforgeeks.org/nan-not-number-java/
-        //Design the asserts here and implement accordingly.
-    }
-    @Test
-    public void reportsAlertsIfMaxIsMoreThanThreshold()
-    {
-        EmailAlert emailAlerter = new EmailAlert();
-        LEDAlert ledAlerter = new LEDAlert();
-        IAlerter alerters[] = {emailAlerter, ledAlerter};
-        float maxThreshold = 10.2f;
-        StatsChecker checker = new StatsChecker(maxThreshold, alerters);
+    Statistics.Stats s = Statistics.getStatistics(numberList);
 
-        Float[] numbers = {11.5f, 6.9f, 7.5f, 6.6f};
-        List<___> numberList = Arrays.asList(numbers);
-        checker.checkAndAlert(numbers);
-        
-        assertTrue(emailAlerter.emailSent);
-        assertTrue(ledAlerter.ledGlows);
-    }
+    float epsilon = 0.001f;
+    assertEquals(s.average, Float.NaN, epsilon);
+    assertEquals(s.min, 1.5f, epsilon);
+    assertEquals(s.max, Float.NaN, epsilon);
+  }
+
+  @Test
+  public void reportsNaNForEmptyInput() {
+    List<Float> emptyList = new ArrayList<Float>();
+
+    Statistics.Stats s = Statistics.getStatistics(emptyList);
+
+    assertTrue(s.min.isNaN());
+    assertTrue(s.max.isNaN());
+    assertTrue(s.average.isNaN());
+    assertEquals(s.min, Float.NaN, 0.0);
+    assertEquals(s.max, Float.NaN, 0.0);
+    assertEquals(s.average, Float.NaN, 0.0);
+  }
+
 }
